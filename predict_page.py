@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import requests
 import json
-import joblib
+#import joblib
 
 url_heroes = 'https://api.opendota.com/api/heroes'
 response_heroes = requests.get(url_heroes)
