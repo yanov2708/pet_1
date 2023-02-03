@@ -58,8 +58,8 @@ def show_predict_page():
             radiant_score = st.number_input('Fill radiant score', step=1, value=39)
             st.write('The current number is ', radiant_score)
 
-            radiant_heroes = st.multiselect('Сhoose your heroes', heroes_list, max_selections=5, default=['Sniper', 'Phantom Assassin', 'Lina', 'Bloodseeker', 'Drow Ranger'])
-
+            radiant_heroes = st.multiselect('Сhoose your heroes', heroes_list, max_selections=5)
+            #default=['Sniper', 'Phantom Assassin', 'Lina', 'Bloodseeker', 'Drow Ranger']
 
 
         with dire_team:
@@ -68,8 +68,8 @@ def show_predict_page():
             st.write('The current number is ', dire_score)
 
             heroes_list_for_dire = list(set(heroes_list) - set(radiant_heroes))
-            dire_heroes = st.multiselect('Сhoose your heroes', heroes_list_for_dire, max_selections=5, default=['Alchemist', 'Lifestealer', 'Zeus', 'Phoenix', 'Pudge'])
-
+            dire_heroes = st.multiselect('Сhoose your heroes', heroes_list_for_dire, max_selections=5)
+            #default=['Alchemist', 'Lifestealer', 'Zeus', 'Phoenix', 'Pudge']
 
 
         with general_match_info:
