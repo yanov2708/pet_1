@@ -11,7 +11,7 @@ But I chose such a task in order to go through the main stages such as:
 * hypothesis testing
 
 
-I presented the implementation in the streamlit cloud - [link]('https://yanov2708-pet-1-app-s1g7xs.streamlit.app/')
+I presented the implementation in the streamlit cloud - [link](https://yanov2708-pet-1-app-s1g7xs.streamlit.app/)
 
 And the detailed steps are described in the notebook and .py files
 
