@@ -11,7 +11,7 @@ from help_functions import load_model
 from help_functions import load_df_5f
 from help_functions import load_df_15f
 from help_functions import return_hero_frequency
-
+from help_functions import return_count_victories
 
 heroes_list, dict_hero_id, dict_id_hero = return_heroes()
 pickle_model = load_model()
@@ -100,10 +100,10 @@ pd.Series(list_with_all_heroes_from_df, name='').nunique()
         popular, not_popular, = st.columns(2, gap='large')
         with popular:
             st.markdown('''### Popular 	:small_red_triangle: ''')
-            st.dataframe(head_heroes)
+            st.dataframe(head_heroes, use_container_width=True)
         with not_popular:
             st.markdown('''### Less popular :small_red_triangle_down: ''')
-            st.dataframe(tail_heroes)
+            st.dataframe(tail_heroes, use_container_width=True)
 
         #2
         st.header('Description of our features, without hero columns.')
@@ -135,7 +135,25 @@ pd.Series(list_with_all_heroes_from_df, name='').nunique()
         st.subheader('Although the date of data collection may be useful, for example, this way you can understand which dota.patch the entries belong to')
 
     with tab3:
-        st.title('Hypothesis testing')
+        st.title('Hypothesis testing :eyes:')
+        st.markdown(''' ### $H_0 : p_{radiant-win} = p_{dire-win} = 0.5$ ''')
+        st.markdown(''' ### $H_A : p_{radiant-win} ≠ p_{dire-win}$ ''')
+        st.caption('where p - probability')
+        st.dataframe(return_count_victories(), use_container_width=True)
+
+        st.markdown('''Binomial distribution is our case.
+        \n
+Since our $n$ is large, we can approximate the binomial distribution with a Gaussian, and we can directly look up $z$-score in a 
+$p$-value table for Gaussian distribution.
+\n
+If the probability for "radiant_win" is equal to the probability of "dire_win", they are both 0.5.
+\n
+$n = 7362$, we can safely use a Gaussian approximation and calculate the z-score.''')
+
+        st.markdown(r'''
+# $z = \frac{\hat{p} - p_0}{\sqrt{\frac{p_0(1-p_0)}{n}}}$
+
+where $\hat{p}$ is our estimated probability of 'radiant_win' and $p_0 = 0.5$''')
 
 
     with tab4:

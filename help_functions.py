@@ -55,3 +55,13 @@ def return_hero_frequency():
     popular_heroes = temp.groupby('record_name_of_all_heroes', as_index=False).count().rename(
                 columns={'record_name_of_all_heroes': 'hero', 'record_id_of_all_heroes': 'frequency'}).sort_values('frequency', ascending=False)
     return popular_heroes.head(), popular_heroes.tail()
+
+def return_count_victories():
+    df = pd.read_csv('df/matches7.csv')
+    groups = df.groupby('radiant_win', as_index=False).agg({'id': 'count'})
+    groups['total'] = df.shape[0]
+    groups['freq'] = round(groups.id / groups.total, 3)
+    #groups['freq%'] = round(groups.id / groups.total * 100, 1)
+    groups = groups.drop(columns=['radiant_win']).rename(columns={'id': 'victories'}, index={0: 'dire', 1: 'radiant'})
+    return groups
+
