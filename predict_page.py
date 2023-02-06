@@ -3,7 +3,7 @@ import streamlit as st
 from PIL import Image
 import numpy as np
 import pandas as pd
-from random import sample
+#from random import sample
 
 from help_functions import return_heroes
 from help_functions import list_to_df
@@ -21,8 +21,8 @@ loaded_classifier = pickle_model["sgd_model"]
 
 
 def show_tabs():
-    global tab1, tab2, tab3, tab4
-    tab1, tab2, tab3, tab4 = st.tabs(["Predict", "EDA", 'Hypothesis testing', 'Model'])
+    global tab1, tab2, tab3
+    tab1, tab2, tab3 = st.tabs(["Predict", "EDA", 'Hypothesis testing'])
 
 def show_predict_page():
 
@@ -92,7 +92,7 @@ def show_predict_page():
         code1 = '''list_with_all_heroes_from_df = df[['hero_radiant_1', 'hero_radiant_2', 'hero_radiant_3', 'hero_radiant_4', 'hero_radiant_5',
                                    'hero_dire_1', 'hero_dire_2', 'hero_dire_3', 'hero_dire_4', 'hero_dire_5']].to_numpy().ravel(order='F')
 pd.Series(list_with_all_heroes_from_df, name='').nunique()
-#this snippet returned - 123'''
+#this snippet returned: 123'''
         st.code(code1, language='python')
         #1.2
         st.subheader("Next, let's look at the five most and least popular heroes.")
@@ -140,7 +140,25 @@ pd.Series(list_with_all_heroes_from_df, name='').nunique()
         st.markdown(''' ### $H_A : p_{radiant-win} ≠ p_{dire-win}$ ''')
         st.caption('where p - probability')
         st.dataframe(return_count_victories(), use_container_width=True)
+        #1.1
+        st.markdown('## First approach: $Chi^2$')
+        st.markdown('### Represent our dataset in the a different way')
+        st.dataframe(pd.DataFrame([[4108, 3254], [3681, 3681]], columns=['radiant', 'dire'], index=['observed wins', 'expected wins']), use_container_width=True)
+        st.markdown(r'''Lets calculate Chi-squared distance by this formula:
+        
+$χ^2 = \displaystyle\sum_{i=1}^{n} \frac{(observed_i - expected_i)^2}{expected_i} =  \frac{(4108-3681)^2}{3681} + \frac{(3254-3681)^2}{3681} = 99.06$
 
+After we can calculate the p-value by plotting the distance value on the **distribution graph $Chi^2$**.''')
+        st.markdown('''**We have one degree of freedom, hence the critical $Chi^2$ value for p-value = 0.05 is 3.84**''')
+        chi_distrib = Image.open('pictures/Chi-distrib.png')
+        st.image(chi_distrib)
+        st.markdown('''The resulting p-value = 2.4e-23 is so small that it cannot be displayed on the chart''')
+        st.markdown('''### Conclusion:round_pushpin:: 
+**Based on the p-value, we reject $H_0$ and we can say that the distribution of wins of the two sides is not uniform :arrow_right: and since 
+the match data was collected randomly and independently of any influences, we can say that at least in patch 7.32d, the percentage of wins of the :green[Radiant] side is higher than :red[Dire].**''')
+
+        #1.2
+        st.markdown('## Second approach: Gaussian approximation')
         st.markdown('''Binomial distribution is our case.
         \n
 Since our $n$ is large, we can approximate the binomial distribution with a Gaussian, and we can directly look up $z$-score in a 
@@ -151,10 +169,13 @@ If the probability for "radiant_win" is equal to the probability of "dire_win", 
 $n = 7362$, we can safely use a Gaussian approximation and calculate the z-score.''')
 
         st.markdown(r'''
-# $z = \frac{\hat{p} - p_0}{\sqrt{\frac{p_0(1-p_0)}{n}}}$
+### $z = \frac{\hat{p} - p_0}{\sqrt{\frac{p_0(1-p_0)}{n}}} = \frac{0.558 - 0.5}{\sqrt{\frac{0.5(1-0.5)}{7362}}} = 9.95$
 
 where $\hat{p}$ is our estimated probability of 'radiant_win' and $p_0 = 0.5$''')
+        st.markdown('''**In the table of the Gaussian distribution, we will not find such limiting z-values, so we calculate the p-value using scipy**''')
+        st.code('p_value = scipy.stats.norm.sf(abs(z)) \n#this snippet returned: 1.22e-23', language='python')
+        st.markdown('''### Conclusion:round_pushpin::
+**The p-value is much less than the threshold value of 0.05, and we can safely conclude that the probability of "radiant_win" is statistically significantly different from "dire_win".**''')
 
-
-    with tab4:
-        st.title('About model')
+    # with tab4:
+    #     st.title('About model')
