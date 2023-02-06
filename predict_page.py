@@ -8,10 +8,12 @@ from random import sample
 from help_functions import return_heroes
 from help_functions import list_to_df
 from help_functions import load_model
-from help_functions import load_df
+from help_functions import load_df_5f
+from help_functions import load_df_15f
+from help_functions import return_hero_frequency
 
 
-heroes_list, dict_hero_id = return_heroes()
+heroes_list, dict_hero_id, dict_id_hero = return_heroes()
 pickle_model = load_model()
 loaded_classifier = pickle_model["sgd_model"]
 
@@ -80,7 +82,7 @@ def show_predict_page():
         'duration', 'radiant_score', 'dire_score', 
         'hero_radiant_1', 'hero_radiant_2', 'hero_radiant_3', 'hero_radiant_4', 'hero_radiant_5', 
         'hero_dire_1', 'hero_dire_2', 'hero_dire_3', 'hero_dire_4', 'hero_dire_5' ''')
-        df = load_df()
+        df = load_df_5f()
 
 
         #1
@@ -93,8 +95,15 @@ pd.Series(list_with_all_heroes_from_df, name='').nunique()
 #this snippet returned - 123'''
         st.code(code1, language='python')
         #1.2
-        st.subheader("Next, let's look at the top popular heroes for :green[Radiant] and :red[Dire] side.")
-        ############  need update
+        st.subheader("Next, let's look at the five most and least popular heroes.")
+        head_heroes, tail_heroes = return_hero_frequency()
+        popular, not_popular, = st.columns(2, gap='large')
+        with popular:
+            st.markdown('''### Popular 	:small_red_triangle: ''')
+            st.dataframe(head_heroes)
+        with not_popular:
+            st.markdown('''### Less popular :small_red_triangle_down: ''')
+            st.dataframe(tail_heroes)
 
         #2
         st.header('Description of our features, without hero columns.')
@@ -107,10 +116,10 @@ pd.Series(list_with_all_heroes_from_df, name='').nunique()
         st.subheader('We see that the victories of the :green[Radiant] side are more, in the next section we will check if this is an accident or not.')
 
         #4
-        st.header("Next, let's take a look at the distribution of the duration of matches in seconds, by the way, for training the model, I selected only turbo matches :fast_forward:.")
+        st.header("Next, let's take a look at the distribution of the duration of matches in seconds, by the way, I selected only turbo matches :fast_forward:.")
         dur_distrib = Image.open('pictures/Duration.png')
         st.image(dur_distrib)
-        st.subheader('We see that the duration ranges from 15 minutes to 25')
+        st.subheader('We see that the duration ranges from 15 minutes to 25, and the most matches with a duration of 18 minutes')
 
         #5
         st.header("Next, let's look at the boxplot of each side's score.	:package:")
@@ -127,6 +136,7 @@ pd.Series(list_with_all_heroes_from_df, name='').nunique()
 
     with tab3:
         st.title('Hypothesis testing')
+
 
     with tab4:
         st.title('About model')
