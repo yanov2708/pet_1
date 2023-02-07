@@ -34,7 +34,7 @@ def show_predict_page():
 
 
         with radiant_team:
-            st.header('''Radiant''')
+            st.header(''':green[Radiant]''')
             radiant_score = st.number_input('Fill radiant score', step=1, value=39)
             st.write('The current number is ', radiant_score)
 
@@ -43,7 +43,7 @@ def show_predict_page():
 
 
         with dire_team:
-            st.header('''Dire''')
+            st.header(''':red[Dire]''')
             dire_score = st.number_input('Fill dire score', step=1, value=43)
             st.write('The current number is ', dire_score)
 
